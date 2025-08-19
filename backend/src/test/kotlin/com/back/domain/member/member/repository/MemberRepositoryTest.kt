@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.domain.PageRequest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 
@@ -118,5 +119,76 @@ class MemberRepositoryTest {
 
         assertThat(members).isNotEmpty
         assertThat(members.any { it.username == "admin" && (it.password == "wrong-password" || it.nickname == "관리자") }).isTrue
+    }
+    @Test
+    @DisplayName("findByNicknameContaining")
+    fun t13() {
+        val members = memberRepository.findByNicknameContaining("유저")
+
+        assertThat(members).isNotEmpty
+        assertThat(members.all { it.nickname.contains("유저") }).isTrue
+    }
+
+    @Test
+    @DisplayName("findQByNicknameContaining")
+    fun t14() {
+        val members = memberRepository.findQByNicknameContaining("유저")
+
+        assertThat(members).isNotEmpty
+        assertThat(members.all { it.nickname.contains("유저") }).isTrue
+    }
+
+    @Test
+    @DisplayName("countByNicknameContaining")
+    fun t15() {
+        val count = memberRepository.countByNicknameContaining("유저")
+
+        assertThat(count).isEqualTo(3)
+    }
+
+    @Test
+    @DisplayName("countQByNicknameContaining")
+    fun t16() {
+        val count = memberRepository.countQByNicknameContaining("유저")
+
+        assertThat(count).isEqualTo(3)
+    }
+
+    @Test
+    @DisplayName("existsByNicknameContaining")
+    fun t17() {
+        val exists = memberRepository.existsByNicknameContaining("유저")
+
+        assertThat(exists).isTrue
+    }
+
+    @Test
+    @DisplayName("existsQByNicknameContaining")
+    fun t18() {
+        val exists = memberRepository.existsQByNicknameContaining("유저")
+
+        assertThat(exists).isTrue
+    }
+
+    @Test
+    @DisplayName("findByNicknameContaining with Pageable")
+    fun t19() {
+        val pageable = PageRequest.of(0, 2)
+        val page = memberRepository.findByNicknameContaining("유저", pageable)
+
+        assertThat(page.content).hasSize(2)
+        assertThat(page.totalElements).isEqualTo(3)
+        assertThat(page.totalPages).isEqualTo(2)
+    }
+
+    @Test
+    @DisplayName("findQByNicknameContaining with Pageable")
+    fun t20() {
+        val pageable = PageRequest.of(0, 2)
+        val page = memberRepository.findQByNicknameContaining("유저", pageable)
+
+        assertThat(page.content).hasSize(2)
+        assertThat(page.totalElements).isEqualTo(3)
+        assertThat(page.totalPages).isEqualTo(2)
     }
 }

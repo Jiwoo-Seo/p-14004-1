@@ -4,6 +4,7 @@ import com.back.domain.member.member.entity.QMember
 import com.back.standard.extensions.getOrThrow
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.support.PageableExecutionUtils
 import org.springframework.stereotype.Repository
@@ -64,7 +65,12 @@ class MemberRepositoryImpl(
             )
             .fetch()
     }
-    override fun findQByUsernameAndEitherPasswordOrNickname(username: String, password: String?, nickname: String?): List<Member> {
+
+    override fun findQByUsernameAndEitherPasswordOrNickname(
+        username: String,
+        password: String?,
+        nickname: String?
+    ): List<Member> {
         val member = QMember.member
 
         return queryFactory
@@ -77,5 +83,53 @@ class MemberRepositoryImpl(
                     )
             )
             .fetch()
+    }
+
+    override fun findQByNicknameContaining(nickname: String): List<Member> {
+        val member = QMember.member
+
+        return queryFactory
+            .selectFrom(member)
+            .where(member.nickname.contains(nickname))
+            .fetch()
+    }
+
+    override fun countQByNicknameContaining(nickname: String): Long {
+        val member = QMember.member
+
+        return queryFactory
+            .select(member.count())
+            .from(member)
+            .where(member.nickname.contains(nickname))
+            .fetchOne() ?: 0L
+    }
+
+    override fun existsQByNicknameContaining(nickname: String): Boolean {
+        val member = QMember.member
+
+        return queryFactory
+            .selectOne()
+            .from(member)
+            .where(member.nickname.contains(nickname))
+            .fetchFirst() != null
+    }
+
+    override fun findQByNicknameContaining(nickname: String, pageable: Pageable): Page<Member> {
+        val member = QMember.member
+
+        val results = queryFactory
+            .selectFrom(member)
+            .where(member.nickname.contains(nickname))
+            .offset(pageable.offset)
+            .limit(pageable.pageSize.toLong())
+            .fetch()
+
+        val total = queryFactory
+            .select(member.count())
+            .from(member)
+            .where(member.nickname.contains(nickname))
+            .fetchOne() ?: 0L
+
+        return PageImpl(results, pageable, total)
     }
 }
