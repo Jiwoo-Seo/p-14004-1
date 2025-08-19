@@ -102,4 +102,21 @@ class MemberRepositoryTest {
         assertThat(members).isNotEmpty
         assertThat(members.any { it.username == "admin" || it.nickname == "유저1" }).isTrue
     }
+    @Test
+    @DisplayName("findCByUsernameAndEitherPasswordOrNickname")
+    fun t11() {
+        val members = memberRepository.findCByUsernameAndEitherPasswordOrNickname("admin", "wrong-password", "관리자")
+
+        assertThat(members).isNotEmpty
+        assertThat(members.any { it.username == "admin" && (it.password == "wrong-password" || it.nickname == "관리자") }).isTrue
+    }
+
+    @Test
+    @DisplayName("findQByUsernameAndPasswordOrNickname")
+    fun t12() {
+        val members = memberRepository.findQByUsernameAndEitherPasswordOrNickname("admin", "wrong-password", "관리자")
+
+        assertThat(members).isNotEmpty
+        assertThat(members.any { it.username == "admin" && (it.password == "wrong-password" || it.nickname == "관리자") }).isTrue
+    }
 }
