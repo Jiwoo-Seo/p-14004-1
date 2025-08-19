@@ -234,4 +234,20 @@ class MemberRepositoryTest {
             assertThat(page.content[i].id).isGreaterThan(page.content[i + 1].id)
         }
     }
+
+    @Test
+    @DisplayName("findQByUsernameContaining with Pageable")
+    fun t24() {
+        val pageable = PageRequest.of(
+            0, 2,
+            Sort.by("id").descending()
+                .and(Sort.by("username").ascending())
+                .and(Sort.by("nickname").descending())
+        )
+        val page = memberRepository.findQByUsernameContaining("user", pageable)
+
+        for (i in 0 until page.content.size - 1) {
+            assertThat(page.content[i].id).isGreaterThan(page.content[i + 1].id)
+        }
+    }
 }
