@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 
@@ -190,5 +191,47 @@ class MemberRepositoryTest {
         assertThat(page.content).hasSize(2)
         assertThat(page.totalElements).isEqualTo(3)
         assertThat(page.totalPages).isEqualTo(2)
+    }
+
+    @Test
+    @DisplayName("findByNicknameContainingOrderByIdDesc")
+    fun t21() {
+        val members = memberRepository.findByNicknameContainingOrderByIdDesc("유저")
+
+        assertThat(members).isNotEmpty
+        assertThat(members.all { it.nickname.contains("유저") }).isTrue
+
+        for (i in 0 until members.size - 1) {
+            assertThat(members[i].id).isGreaterThan(members[i + 1].id)
+        }
+    }
+
+    @Test
+    @DisplayName("findQByNicknameContainingOrderByIdDesc")
+    fun t22() {
+        val members = memberRepository.findQByNicknameContainingOrderByIdDesc("유저")
+
+        assertThat(members).isNotEmpty
+        assertThat(members.all { it.nickname.contains("유저") }).isTrue
+
+        for (i in 0 until members.size - 1) {
+            assertThat(members[i].id).isGreaterThan(members[i + 1].id)
+        }
+    }
+
+    @Test
+    @DisplayName("findByUsernameContaining with Pageable")
+    fun t23() {
+        val pageable = PageRequest.of(
+            0, 2,
+            Sort.by("id").descending()
+                .and(Sort.by("username").ascending())
+                .and(Sort.by("nickname").descending())
+        )
+        val page = memberRepository.findByUsernameContaining("user", pageable)
+
+        for (i in 0 until page.content.size - 1) {
+            assertThat(page.content[i].id).isGreaterThan(page.content[i + 1].id)
+        }
     }
 }
