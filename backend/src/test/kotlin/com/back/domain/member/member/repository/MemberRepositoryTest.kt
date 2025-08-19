@@ -33,4 +33,73 @@ class MemberRepositoryTest {
 
         assertThat(member.id).isEqualTo(1)
     }
+
+    @Test
+    @DisplayName("findByUsername")
+    fun t3() {
+        val member = memberRepository.findByUsername("admin").getOrThrow()
+
+        assertThat(member.username).isEqualTo("admin")
+    }
+
+    @Test
+    @DisplayName("findQByUsername")
+    fun t4() {
+        val member = memberRepository.findQByUsername("admin").getOrThrow()
+
+        assertThat(member.username).isEqualTo("admin")
+    }
+
+    @Test
+    @DisplayName("findByIdIn")
+    fun t5() {
+        val members = memberRepository.findByIdIn(listOf(1, 2, 3))
+
+        assertThat(members).isNotEmpty
+        assertThat(members.map { it.id }).containsAnyOf(1, 2, 3)
+    }
+
+    @Test
+    @DisplayName("findQByIdIn")
+    fun t6() {
+        val members = memberRepository.findQByIdIn(listOf(1, 2, 3))
+
+        assertThat(members).isNotEmpty
+        assertThat(members.map { it.id }).containsAnyOf(1, 2, 3)
+    }
+    @Test
+    @DisplayName("findByUsernameAndNickname")
+    fun t7() {
+        val member = memberRepository.findByUsernameAndNickname("admin", "관리자").getOrThrow()
+
+        assertThat(member.username).isEqualTo("admin")
+        assertThat(member.nickname).isEqualTo("관리자")
+    }
+
+    @Test
+    @DisplayName("findQByUsernameAndNickname")
+    fun t8() {
+        val member = memberRepository.findQByUsernameAndNickname("admin", "관리자").getOrThrow()
+
+        assertThat(member.username).isEqualTo("admin")
+        assertThat(member.nickname).isEqualTo("관리자")
+    }
+
+    @Test
+    @DisplayName("findByUsernameOrNickname")
+    fun t9() {
+        val members = memberRepository.findByUsernameOrNickname("admin", "유저1")
+
+        assertThat(members).isNotEmpty
+        assertThat(members.any { it.username == "admin" || it.nickname == "유저1" }).isTrue
+    }
+
+    @Test
+    @DisplayName("findQByUsernameOrNickname")
+    fun t10() {
+        val members = memberRepository.findQByUsernameOrNickname("admin", "유저1")
+
+        assertThat(members).isNotEmpty
+        assertThat(members.any { it.username == "admin" || it.nickname == "유저1" }).isTrue
+    }
 }
