@@ -18,6 +18,18 @@ fun String.base64Decode(): String {
     return Base64.UrlSafe.decode(this).decodeToString()
 }
 
+fun String.toCamelCase() =
+    this
+        .split("_")
+        .mapIndexed { index, word ->
+            if (index == 0)
+                word.lowercase()
+            else
+                word.lowercase().replaceFirstChar {
+                    it.uppercase()
+                }
+        }.joinToString("")
+
 // null이면 NoSuchElementException을 발생, null이 아니면 nullable 제거
 // 모든 nullable 객체에 추가
 fun <T : Any> T?.getOrThrow(): T {

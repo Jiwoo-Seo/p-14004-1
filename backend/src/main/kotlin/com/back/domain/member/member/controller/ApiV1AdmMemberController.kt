@@ -3,6 +3,7 @@ package com.back.domain.member.member.controller
 import com.back.domain.member.member.dto.MemberWithUsernameDto
 import com.back.domain.member.member.service.MemberService
 import com.back.standard.dto.MemberSearchKeywordType1
+import com.back.standard.dto.MemberSearchSortType1
 import com.back.standard.dto.PageDto
 import com.back.standard.extensions.getOrThrow
 import io.swagger.v3.oas.annotations.Operation
@@ -31,7 +32,7 @@ class ApiV1AdmMemberController(
         @RequestParam(defaultValue = "5") pageSize: Int,
         @RequestParam(defaultValue = "ALL") kwType: MemberSearchKeywordType1,
         @RequestParam(defaultValue = "") kw: String,
-        @RequestParam(defaultValue = "id") sort: String
+        @RequestParam(defaultValue = "ID") sort: MemberSearchSortType1,
     ): PageDto<MemberWithUsernameDto> {
         val page: Int = if (page >= 1) {
             page
