@@ -16,4 +16,5 @@ interface MemberRepositoryCustom {
     fun findQByNicknameContaining(nickname: String, pageable: Pageable): Page<Member>
     fun findQByNicknameContainingOrderByIdDesc(nickname: String): List<Member>
     fun findQByUsernameContaining(username: String, pageable: Pageable): Page<Member>
+    fun findQPagedByKw(kw: String, pageable: Pageable): Page<Member>
 }

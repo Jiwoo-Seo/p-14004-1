@@ -172,4 +172,10 @@ class MemberRepositoryImpl(
             totalQuery.fetchFirst() ?: 0L
         }
     }
+    override fun findQPagedByKw(
+        kw: String,
+        pageable: Pageable
+    ): Page<Member> {
+        throw RuntimeException("Not implemented yet")
+    }
 }

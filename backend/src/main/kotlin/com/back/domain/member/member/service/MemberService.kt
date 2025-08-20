@@ -56,7 +56,6 @@ class MemberService(
         PageRequest.of(page - 1, pageSize, Sort.by(Sort.Direction.DESC, "id"))
     )
 
-
     fun modifyOrJoin(username: String, password: String?, nickname: String, profileImgUrl: String?): RsData<Member> =
         findByUsername(username)
             ?.let {
@@ -70,4 +69,9 @@ class MemberService(
     fun modify(member: Member, nickname: String, profileImgUrl: String?) {
         member.modify(nickname, profileImgUrl)
     }
+
+    fun findPagedByKw(kw: String, page: Int, pageSize: Int) = memberRepository.findQPagedByKw(
+        kw,
+        PageRequest.of(page - 1, pageSize, Sort.by(Sort.Direction.DESC, "id"))
+    )
 }
