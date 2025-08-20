@@ -70,7 +70,8 @@ class MemberService(
         member.modify(nickname, profileImgUrl)
     }
 
-    fun findPagedByKw(kw: String, page: Int, pageSize: Int) = memberRepository.findQPagedByKw(
+    fun findPagedByKw(kwType: String, kw: String, page: Int, pageSize: Int) = memberRepository.findQPagedByKw(
+        kwType,
         kw,
         PageRequest.of(page - 1, pageSize, Sort.by(Sort.Direction.DESC, "id"))
     )
