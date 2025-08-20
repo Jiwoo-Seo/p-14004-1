@@ -30,7 +30,8 @@ class ApiV1AdmMemberController(
         @RequestParam(defaultValue = "1") page: Int,
         @RequestParam(defaultValue = "5") pageSize: Int,
         @RequestParam(defaultValue = "ALL") kwType: MemberSearchKeywordType1,
-        @RequestParam(defaultValue = "") kw: String
+        @RequestParam(defaultValue = "") kw: String,
+        @RequestParam(defaultValue = "id") sort: String
     ): PageDto<MemberWithUsernameDto> {
         val page: Int = if (page >= 1) {
             page
@@ -44,7 +45,7 @@ class ApiV1AdmMemberController(
             5
         }
 
-        val memberPage = memberService.findPagedByKw(kwType, kw, page, pageSize)
+        val memberPage = memberService.findPagedByKw(kwType, kw, sort, page, pageSize)
 
         return PageDto(
             memberPage
