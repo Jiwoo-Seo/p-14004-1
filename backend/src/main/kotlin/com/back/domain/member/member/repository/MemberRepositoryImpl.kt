@@ -176,6 +176,42 @@ class MemberRepositoryImpl(
         kw: String,
         pageable: Pageable
     ): Page<Member> {
-        throw RuntimeException("Not implemented yet")
+        val member = QMember.member
+
+        // 조건 빌더 생성
+        val builder = com.querydsl.core.BooleanBuilder()
+        if (kw.isNotBlank()) {
+            builder.and(member.nickname.contains(kw))
+        }
+
+        // 기본 query 생성
+        val query = queryFactory
+            .selectFrom(member)
+            .where(builder)
+
+        // pageable 정렬 조건 적용
+        pageable.sort.forEach { order ->
+            when (order.property) {
+                "id" -> query.orderBy(if (order.isAscending) member.id.asc() else member.id.desc())
+                "username" -> query.orderBy(if (order.isAscending) member.username.asc() else member.username.desc())
+                "nickname" -> query.orderBy(if (order.isAscending) member.nickname.asc() else member.nickname.desc())
+            }
+        }
+
+        // 페이징 데이터 조회
+        val results = query
+            .offset(pageable.offset)
+            .limit(pageable.pageSize.toLong())
+            .fetch()
+
+        // 카운트 쿼리 (조건 동일하게 적용)
+        val totalQuery = queryFactory
+            .select(member.count())
+            .from(member)
+            .where(builder)
+
+        return PageableExecutionUtils.getPage(results, pageable) {
+            totalQuery.fetchFirst() ?: 0L
+        }
     }
 }
