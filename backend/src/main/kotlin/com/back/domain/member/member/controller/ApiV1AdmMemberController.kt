@@ -6,6 +6,7 @@ import com.back.standard.extensions.getOrThrow
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.springframework.data.domain.Page
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -27,7 +28,7 @@ class ApiV1AdmMemberController(
     fun getItems(
         @RequestParam(defaultValue = "1") page: Int,
         @RequestParam(defaultValue = "5") pageSize: Int,
-    ): List<MemberWithUsernameDto> {
+    ): Page<MemberWithUsernameDto> {
         val page: Int = if (page >= 1) {
             page
         } else {
@@ -40,9 +41,10 @@ class ApiV1AdmMemberController(
             5
         }
 
-        val members = memberService.findPaged(page, pageSize).content
+        val memberPage = memberService.findPaged(page, pageSize)
 
-        return members.map { MemberWithUsernameDto(it) }
+        return memberPage
+            .map { member -> MemberWithUsernameDto(member) }
     }
 
     @GetMapping("/{id}")
