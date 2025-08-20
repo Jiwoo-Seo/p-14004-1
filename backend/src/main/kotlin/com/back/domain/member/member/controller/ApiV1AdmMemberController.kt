@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 
@@ -23,7 +24,22 @@ class ApiV1AdmMemberController(
     @GetMapping
     @Transactional(readOnly = true)
     @Operation(summary = "다건 조회")
-    fun getItems(): List<MemberWithUsernameDto> {
+    fun getItems(
+        @RequestParam(defaultValue = "1") page: Int,
+        @RequestParam(defaultValue = "5") pageSize: Int,
+    ): List<MemberWithUsernameDto> {
+        val page: Int = if (page < 1) {
+            page
+        } else {
+            1
+        }
+
+        val pageSize: Int = if (pageSize in 1..30) {
+            pageSize
+        } else {
+            5
+        }
+
         val members = memberService.findAll()
 
         return members.map { MemberWithUsernameDto(it) }
