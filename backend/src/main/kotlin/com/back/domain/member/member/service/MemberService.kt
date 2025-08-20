@@ -85,7 +85,7 @@ class MemberService(
             PageRequest.of(
                 page - 1,
                 pageSize,
-                Sort.by(if (sort.isAsc) Sort.Direction.ASC else Sort.Direction.DESC, sort.property)
+                sort.sortBy
             )
         )
 }

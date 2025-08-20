@@ -3,13 +3,9 @@ package com.back.standard.dto
 import com.back.standard.extensions.toCamelCase
 import org.springframework.data.domain.Sort
 
-enum class MemberSearchSortType1 {
+enum class PostSearchSortType1 {
     ID,
-    ID_ASC,
-    USERNAME,
-    USERNAME_ASC,
-    NICKNAME,
-    NICKNAME_ASC;
+    ID_ASC;
 
     val sortBy by lazy {
         Sort.by(
