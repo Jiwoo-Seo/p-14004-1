@@ -33,11 +33,11 @@ class ApiV1AdmMemberControllerTest {
     fun t1() {
         val resultActions = mvc
             .perform(
-                get("/api/v1/adm/members")
+                get("/api/v1/adm/members?page=1&pageSize=5")
             )
             .andDo(print())
 
-        val members = memberService.findAll()
+        val members = memberService.findPaged(1, 5).content
 
         resultActions
             .andExpect(handler().handlerType(ApiV1AdmMemberController::class.java))

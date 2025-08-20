@@ -4,6 +4,8 @@ import com.back.domain.member.member.entity.Member
 import com.back.domain.member.member.repository.MemberRepository
 import com.back.global.exception.ServiceException
 import com.back.global.rsData.RsData
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
@@ -49,6 +51,11 @@ class MemberService(
         if (!passwordEncoder.matches(rawPassword, hashed))
             throw ServiceException("401-1", "비밀번호가 일치하지 않습니다.")
     }
+
+    fun findPaged(page: Int, pageSize: Int) = memberRepository.findAll(
+        PageRequest.of(page - 1, pageSize, Sort.by(Sort.Direction.DESC, "id"))
+    )
+
 
     fun modifyOrJoin(username: String, password: String?, nickname: String, profileImgUrl: String?): RsData<Member> =
         findByUsername(username)
