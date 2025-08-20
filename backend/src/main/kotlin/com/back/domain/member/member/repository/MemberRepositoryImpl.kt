@@ -1,6 +1,7 @@
 package com.back.domain.member.member.repository
 import com.back.domain.member.member.entity.Member
 import com.back.domain.member.member.entity.QMember
+import com.back.standard.dto.MemberSearchKeywordType1
 import com.back.standard.util.QueryDslUtil
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.data.domain.Page
@@ -175,7 +176,7 @@ class MemberRepositoryImpl(
         }
     }
     override fun findQPagedByKw(
-        kwType: String,
+        kwType: MemberSearchKeywordType1,
         kw: String,
         pageable: Pageable
     ): Page<Member> {
@@ -186,8 +187,8 @@ class MemberRepositoryImpl(
 
         if (kw.isNotBlank()) {
             when (kwType) {
-                "USERNAME" -> builder.and(member.username.contains(kw))
-                "NICKNAME" -> builder.and(member.nickname.contains(kw))
+                MemberSearchKeywordType1.USERNAME -> builder.and(member.username.contains(kw))
+                MemberSearchKeywordType1.NICKNAME -> builder.and(member.nickname.contains(kw))
                 else -> {
                     builder.and(member.username.contains(kw).or(member.nickname.contains(kw)))
                 }

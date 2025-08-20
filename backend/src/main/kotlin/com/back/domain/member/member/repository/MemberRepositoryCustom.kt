@@ -2,6 +2,7 @@ package com.back.domain.member.member.repository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import com.back.domain.member.member.entity.Member
+import com.back.standard.dto.MemberSearchKeywordType1
 
 interface MemberRepositoryCustom {
     fun findQById(id: Int): Member?
@@ -16,5 +17,5 @@ interface MemberRepositoryCustom {
     fun findQByNicknameContaining(nickname: String, pageable: Pageable): Page<Member>
     fun findQByNicknameContainingOrderByIdDesc(nickname: String): List<Member>
     fun findQByUsernameContaining(username: String, pageable: Pageable): Page<Member>
-    fun findQPagedByKw(kwType: String, kw: String, pageable: Pageable): Page<Member>
+    fun findQPagedByKw(kwType: MemberSearchKeywordType1, kw: String, pageable: Pageable): Page<Member>
 }

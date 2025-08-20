@@ -2,12 +2,12 @@ package com.back.domain.member.member.controller
 
 import com.back.domain.member.member.dto.MemberWithUsernameDto
 import com.back.domain.member.member.service.MemberService
+import com.back.standard.dto.MemberSearchKeywordType1
 import com.back.standard.dto.PageDto
 import com.back.standard.extensions.getOrThrow
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
-import org.springframework.data.domain.Page
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -29,7 +29,7 @@ class ApiV1AdmMemberController(
     fun getItems(
         @RequestParam(defaultValue = "1") page: Int,
         @RequestParam(defaultValue = "5") pageSize: Int,
-        @RequestParam(defaultValue = "") kwType: String,
+        @RequestParam(defaultValue = "ALL") kwType: MemberSearchKeywordType1,
         @RequestParam(defaultValue = "") kw: String
     ): PageDto<MemberWithUsernameDto> {
         val page: Int = if (page >= 1) {

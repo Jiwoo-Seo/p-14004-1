@@ -4,6 +4,7 @@ import com.back.domain.member.member.entity.Member
 import com.back.domain.member.member.repository.MemberRepository
 import com.back.global.exception.ServiceException
 import com.back.global.rsData.RsData
+import com.back.standard.dto.MemberSearchKeywordType1
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -70,7 +71,7 @@ class MemberService(
         member.modify(nickname, profileImgUrl)
     }
 
-    fun findPagedByKw(kwType: String, kw: String, page: Int, pageSize: Int) = memberRepository.findQPagedByKw(
+    fun findPagedByKw(kwType: MemberSearchKeywordType1, kw: String, page: Int, pageSize: Int) = memberRepository.findQPagedByKw(
         kwType,
         kw,
         PageRequest.of(page - 1, pageSize, Sort.by(Sort.Direction.DESC, "id"))
