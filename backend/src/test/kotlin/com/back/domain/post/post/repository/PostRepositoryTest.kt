@@ -37,4 +37,22 @@ class PostRepositoryTest {
 
         assertThat(content).isNotEmpty
     }
+
+    @Test
+    @DisplayName("findQPagedByKw, kwType=PostSearchKeywordType1.AUTHOR_NICKNAME")
+    fun t2() {
+        val postPage = postRepository.findQPagedByKw(
+            PostSearchKeywordType1.AUTHOR_NICKNAME,
+            "유저",
+            PageRequest.of(
+                0,
+                10,
+                PostSearchSortType1.ID.sortBy
+            ),
+        )
+
+        val content = postPage.content
+
+        assertThat(content).isNotEmpty
+    }
 }
