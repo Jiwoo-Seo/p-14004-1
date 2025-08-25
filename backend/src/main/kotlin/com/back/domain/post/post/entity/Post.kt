@@ -7,22 +7,32 @@ import com.back.global.jpa.entity.BaseEntity
 import jakarta.persistence.CascadeType.PERSIST
 import jakarta.persistence.CascadeType.REMOVE
 import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
+import jakarta.persistence.FetchType.LAZY
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
+import jakarta.persistence.OneToOne
 
 @Entity
 class Post(
-    @field:ManyToOne(fetch = FetchType.LAZY) val author: Member,
+    @field:ManyToOne(fetch = LAZY) val author: Member,
     var title: String,
-    var content: String
+    content: String
 ) : BaseEntity() {
+    @OneToOne(fetch = LAZY, cascade = [PERSIST, REMOVE])
+    var body: PostBody = PostBody(content)
+
     @OneToMany(
         mappedBy = "post",
         cascade = [PERSIST, REMOVE],
         orphanRemoval = true
     )
     val comments: MutableList<PostComment> = mutableListOf()
+
+    var content: String
+        get() = body.content
+        set(value) {
+            body.content = value
+        }
 
     fun modify(title: String, content: String) {
         this.title = title
