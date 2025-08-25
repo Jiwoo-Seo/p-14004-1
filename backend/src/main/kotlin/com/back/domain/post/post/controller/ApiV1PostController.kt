@@ -5,6 +5,9 @@ import com.back.domain.post.post.dto.PostWithContentDto
 import com.back.domain.post.post.service.PostService
 import com.back.global.rq.Rq
 import com.back.global.rsData.RsData
+import com.back.standard.dto.PageDto
+import com.back.standard.dto.PostSearchKeywordType1
+import com.back.standard.dto.PostSearchSortType1
 import com.back.standard.extensions.getOrThrow
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
@@ -26,10 +29,37 @@ class ApiV1PostController(
     @GetMapping
     @Transactional(readOnly = true)
     @Operation(summary = "다건 조회")
-    fun getItems(): List<PostDto> {
-        val items = postService.findAll()
+    fun getItems(
+        @RequestParam(defaultValue = "1") page: Int,
+        @RequestParam(defaultValue = "5") pageSize: Int,
+        @RequestParam(defaultValue = "ALL") kwType: PostSearchKeywordType1,
+        @RequestParam(defaultValue = "") kw: String,
+        @RequestParam(defaultValue = "ID") sort: PostSearchSortType1,
+    ): PageDto<PostDto> {
+        val page: Int = if (page >= 1) {
+            page
+        } else {
+            1
+        }
 
-        return items.map { PostDto(it) }
+        val pageSize: Int = if (pageSize in 1..30) {
+            pageSize
+        } else {
+            5
+        }
+
+        val postPage = postService.findPagedByKw(
+            kwType,
+            kw,
+            sort,
+            page,
+            pageSize
+        )
+
+        return PageDto(
+            postPage
+                .map { post -> PostDto(post) }
+        )
     }
 
     @GetMapping("/{id}")

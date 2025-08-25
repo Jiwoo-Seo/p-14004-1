@@ -2,6 +2,8 @@ package com.back.domain.post.post.controller
 
 import com.back.domain.member.member.service.MemberService
 import com.back.domain.post.post.service.PostService
+import com.back.standard.dto.PostSearchKeywordType1
+import com.back.standard.dto.PostSearchSortType1
 import com.back.standard.extensions.getOrThrow
 import jakarta.servlet.http.Cookie
 import org.hamcrest.Matchers
@@ -14,7 +16,6 @@ import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
@@ -438,33 +439,41 @@ class ApiV1PostControllerTest {
     fun t5() {
         val resultActions = mvc
             .perform(
-                get("/api/v1/posts")
+                get("/api/v1/posts?page=1&pageSize=5")
             )
             .andDo(print())
 
-        val posts = postService.findAll()
+        val postPage = postService.findPagedByKw(
+            PostSearchKeywordType1.ALL,
+            "",
+            PostSearchSortType1.ID,
+            1,
+            5
+        )
+
+        val posts = postPage.content
 
         resultActions
             .andExpect(handler().handlerType(ApiV1PostController::class.java))
             .andExpect(handler().methodName("getItems"))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.length()").value(posts.size))
+            .andExpect(jsonPath("$.content.length()").value(posts.size))
 
         for (i in posts.indices) {
             val post = posts[i]
             resultActions
-                .andExpect(jsonPath("$[%d].id".format(i)).value(post.id))
+                .andExpect(jsonPath("$.content[%d].id".format(i)).value(post.id))
                 .andExpect(
-                    jsonPath("$[%d].createDate".format(i))
+                    jsonPath("$.content[%d].createDate".format(i))
                         .value(Matchers.startsWith(post.createDate.toString().take(20)))
                 )
                 .andExpect(
-                    jsonPath("$[%d].modifyDate".format(i))
+                    jsonPath("$.content[%d].modifyDate".format(i))
                         .value(Matchers.startsWith(post.modifyDate.toString().take(20)))
                 )
-                .andExpect(jsonPath("$[%d].authorId".format(i)).value(post.author.id))
-                .andExpect(jsonPath("$[%d].authorName".format(i)).value(post.author.nickname))
-                .andExpect(jsonPath("$[%d].title".format(i)).value(post.title))
+                .andExpect(jsonPath("$.content[%d].authorId".format(i)).value(post.author.id))
+                .andExpect(jsonPath("$.content[%d].authorName".format(i)).value(post.author.nickname))
+                .andExpect(jsonPath("$.content[%d].title".format(i)).value(post.title))
         }
     }
 }

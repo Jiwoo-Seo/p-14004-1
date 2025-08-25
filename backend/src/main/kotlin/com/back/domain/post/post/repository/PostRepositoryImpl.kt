@@ -38,8 +38,7 @@ class PostRepositoryImpl(
         QueryDslUtil.applySorting(query, pageable) { property ->
             when (property) {
                 "id" -> post.id
-                "title" -> post.title
-                "content" -> post.content
+                "authorNickname" -> post.author.nickname
                 else -> null
             }
         }

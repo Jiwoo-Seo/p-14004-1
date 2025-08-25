@@ -4,6 +4,10 @@ import com.back.domain.member.member.entity.Member
 import com.back.domain.post.post.entity.Post
 import com.back.domain.post.post.repository.PostRepository
 import com.back.domain.post.postComment.entity.PostComment
+import com.back.standard.dto.PostSearchKeywordType1
+import com.back.standard.dto.PostSearchSortType1
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 
 @Service
@@ -53,4 +57,21 @@ class PostService(
     fun flush() {
         postRepository.flush()
     }
+
+    fun findPagedByKw(
+        kwType: PostSearchKeywordType1,
+        kw: String,
+        sort: PostSearchSortType1,
+        page: Int,
+        pageSize: Int
+    ): Page<Post> =
+        postRepository.findQPagedByKw(
+            kwType,
+            kw,
+            PageRequest.of(
+                page - 1,
+                pageSize,
+                sort.sortBy
+            )
+        )
 }
