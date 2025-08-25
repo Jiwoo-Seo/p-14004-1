@@ -7,12 +7,13 @@ import com.back.global.jpa.entity.BaseEntity
 import jakarta.persistence.CascadeType.PERSIST
 import jakarta.persistence.CascadeType.REMOVE
 import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 
 @Entity
 class Post(
-    @field:ManyToOne val author: Member,
+    @field:ManyToOne(fetch = FetchType.LAZY) val author: Member,
     var title: String,
     var content: String
 ) : BaseEntity() {

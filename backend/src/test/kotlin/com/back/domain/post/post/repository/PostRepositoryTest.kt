@@ -54,5 +54,8 @@ class PostRepositoryTest {
         val content = postPage.content
 
         assertThat(content).isNotEmpty
+        assertThat(content).allMatch { post ->
+            post.author.nickname.contains("유저", ignoreCase = true)
+        }
     }
 }
