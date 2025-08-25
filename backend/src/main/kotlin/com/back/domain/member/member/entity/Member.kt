@@ -1,6 +1,6 @@
 package com.back.domain.member.member.entity
 
-import com.back.global.jpa.entity.BaseEntity
+import com.back.global.jpa.entity.BaseTime
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import org.springframework.security.core.GrantedAuthority
@@ -15,7 +15,7 @@ class Member(
     var nickname: String,
     @field:Column(unique = true) var apiKey: String,
     var profileImgUrl: String? = null,
-) : BaseEntity(id) {
+) : BaseTime(id) {
     // JPA와 상관없는 객체를 만들 때 사용, SecurityUser로부터 정보를 받아와서 생성할 때 사용
     constructor(id: Int, username: String, nickname: String) : this(
         id,
